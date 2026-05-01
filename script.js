@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz8wfx6SW-_t83MqzY9ONg7xWfptd5of4WpWZu8nP_rJS-EqaTBXgtxHirccQeapNsl/exec';
 
 /* ── POST to Apps Script as text/plain JSON (no-cors compatible) ── */
 async function postToSheet(payload) {
