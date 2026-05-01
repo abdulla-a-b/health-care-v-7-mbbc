@@ -1,1 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workplace Health Research — Patient Registry &amp; Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;9..144,500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+<!-- ════════════════════════════════════════
+     PRINT RECEIPT
+════════════════════════════════════════ -->
+<div id="printReceipt">
+  <div class="pr-page">
+    <div class="pr-confidential">Confidential Medical Record — Not for General Distribution</div>
+    <div class="pr-header">
+      <div class="pr-header-left"><h1>Occupational Illness Registry</h1><p>Workplace Health Research Programme</p></div>
+      <div class="pr-header-right">Ref: <strong id="pr-ref">—</strong><br>Date: <strong id="pr-date">—</strong><br>Time: <strong id="pr-submitted">—</strong></div>
+    </div>
+    <div class="pr-refbar"><span>Patient Medical Record</span><span id="pr-facility-bar">—</span></div>
+
+    <div class="pr-section-label">Attending Professional</div>
+    <div class="pr-grid pr-grid-4">
+      <div class="pr-field"><span class="lbl">Doctor / Staff Name</span><span class="val" id="pr-doctor_name">—</span></div>
+      <div class="pr-field"><span class="lbl">BMDC Reg. No.</span><span class="val" id="pr-bmdc_reg">—</span></div>
+      <div class="pr-field"><span class="lbl">Designation</span><span class="val" id="pr-doctor_role">—</span></div>
+      <div class="pr-field"><span class="lbl">Facility / Factory</span><span class="val" id="pr-facility">—</span></div>
+    </div>
+
+    <div class="pr-section-label">Patient Demographics</div>
+    <div class="pr-grid pr-grid-2" style="margin-bottom:6px">
+      <div class="pr-field"><span class="lbl">Patient Name</span><span class="val" id="pr-patient_name">—</span></div>
+      <div class="pr-field"><span class="lbl">Mobile Number</span><span class="val" id="pr-mobile_number">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-4">
+      <div class="pr-field"><span class="lbl">Age</span><span class="val" id="pr-age">—</span></div>
+      <div class="pr-field"><span class="lbl">Sex</span><span class="val" id="pr-sex">—</span></div>
+      <div class="pr-field"><span class="lbl">Height (cm)</span><span class="val" id="pr-height_cm">—</span></div>
+      <div class="pr-field"><span class="lbl">Weight (kg)</span><span class="val" id="pr-weight_kg">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-4" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Blood Pressure</span><span class="val" id="pr-bp">—</span></div>
+      <div class="pr-field"><span class="lbl">Bed Time</span><span class="val" id="pr-bed_time">—</span></div>
+      <div class="pr-field"><span class="lbl">Wake-up Time</span><span class="val" id="pr-wake_time">—</span></div>
+      <div class="pr-field"><span class="lbl">Sleep Schedule</span><span class="val" id="pr-sleep">—</span></div>
+    </div>
+
+    <div class="pr-section-label">Work Profile</div>
+    <div class="pr-grid pr-grid-4">
+      <div class="pr-field"><span class="lbl">Job Role / Designation</span><span class="val" id="pr-job_designation">—</span></div>
+      <div class="pr-field"><span class="lbl">Total Experience</span><span class="val" id="pr-total_experience">—</span></div>
+      <div class="pr-field"><span class="lbl">Home Distance</span><span class="val" id="pr-home_distance_km">—</span></div>
+      <div class="pr-field"><span class="lbl">Job Nature</span><span class="val" id="pr-job_nature">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-4" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Hrs / Day</span><span class="val" id="pr-hours_per_day">—</span></div>
+      <div class="pr-field"><span class="lbl">Hrs / Week</span><span class="val" id="pr-hours_per_week">—</span></div>
+      <div class="pr-field"><span class="lbl">Years in Current Role</span><span class="val" id="pr-years_in_role">—</span></div>
+      <div class="pr-field"><span class="lbl">Job / Work Area</span><span class="val" id="pr-job_area">—</span></div>
+    </div>
+
+    <div class="pr-section-label">Environmental &amp; Risk Indicators</div>
+    <div class="pr-grid pr-grid-4">
+      <div class="pr-field"><span class="lbl">Chemical / Dust Exposure</span><span class="val" id="pr-chemical_exposure">—</span></div>
+      <div class="pr-field"><span class="lbl">Noise Exposure</span><span class="val" id="pr-noise_exposure">—</span></div>
+      <div class="pr-field"><span class="lbl">Physical Strain</span><span class="val" id="pr-physical_strain">—</span></div>
+      <div class="pr-field"><span class="lbl">Temperature Condition</span><span class="val" id="pr-temperature_condition">—</span></div>
+    </div>
+
+    <div class="pr-section-label">Clinical Presentation</div>
+    <div class="pr-grid pr-grid-2">
+      <div class="pr-field"><span class="lbl">Primary Symptom(s)</span><span class="val long" id="pr-primary_symptoms">—</span></div>
+      <div class="pr-field"><span class="lbl">Secondary Symptom(s)</span><span class="val long" id="pr-secondary_symptoms">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-3" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Duration</span><span class="val" id="pr-duration">—</span></div>
+      <div class="pr-field"><span class="lbl">Severity</span><span class="val" id="pr-severity">—</span></div>
+      <div class="pr-field"><span class="lbl">Type of Illness</span><span class="val" id="pr-illness_type">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-4" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Happened Earlier?</span><span class="val" id="pr-illness_earlier">—</span></div>
+      <div class="pr-field"><span class="lbl">Consultation Taken?</span><span class="val" id="pr-consultation_taken">—</span></div>
+      <div class="pr-field"><span class="lbl">Medication Ongoing?</span><span class="val" id="pr-medication_ongoing">—</span></div>
+      <div class="pr-field"><span class="lbl">Operation History?</span><span class="val" id="pr-operation_history">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-2" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Operation Details</span><span class="val" id="pr-operation_detail">—</span></div>
+      <div class="pr-field"><span class="lbl">Provisional Diagnosis</span><span class="val" id="pr-diagnosis">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-3" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Chronic Disease(s)</span><span class="val long" id="pr-chronic_disease">—</span></div>
+      <div class="pr-field"><span class="lbl">Drinking / Smoking Habit</span><span class="val long" id="pr-habit">—</span></div>
+      <div class="pr-field"><span class="lbl">Family Disease History</span><span class="val long" id="pr-family_history">—</span></div>
+    </div>
+
+    <div class="pr-section-label">Doctor's Assessment</div>
+    <div class="pr-grid pr-grid-2">
+      <div class="pr-field"><span class="lbl">Suggested Diagnostic Tests</span><span class="val long" id="pr-suggested_tests">—</span></div>
+      <div class="pr-field"><span class="lbl">Recommended Medicines</span><span class="val long" id="pr-medicines">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-2" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Food Recommendation</span><span class="val long" id="pr-food_recommendation">—</span></div>
+      <div class="pr-field"><span class="lbl">Exercise Recommendation</span><span class="val long" id="pr-exercise_recommendation">—</span></div>
+    </div>
+    <div class="pr-grid pr-grid-2" style="margin-top:5px">
+      <div class="pr-field"><span class="lbl">Follow-up Recommended</span><span class="val" id="pr-followup">—</span></div>
+      <div class="pr-field"><span class="lbl">Additional Notes</span><span class="val" id="pr-notes">—</span></div>
+    </div>
+
+    <div class="pr-leave-box" id="pr-leave-box" style="display:none">
+      <div class="leave-num" id="pr-leave-num">0</div>
+      <div class="leave-text">
+        <div class="leave-title">Days Recommended Medical Leave</div>
+        <div id="pr-leave-dates" style="font-size:9.5px;color:#7a5c00;margin-top:3px;font-weight:500"></div>
+        <div class="leave-sub">As advised by the attending physician. Present this document to HR / Line Supervisor for leave approval.</div>
+      </div>
+    </div>
+
+    <div class="pr-sig">
+      <div class="pr-sig-box">
+        <div class="sig-name" id="pr-sig-name">Doctor's Name &amp; Signature</div>
+        <div class="sig-sub" id="pr-sig-bmdc"></div>
+        <div class="sig-line">Signature &amp; Stamp</div>
+      </div>
+      <div class="pr-sig-box">
+        <div class="sig-name">Received By — HR / Line Supervisor</div>
+        <div class="sig-sub">Name: _________________________________</div>
+        <div class="sig-line">Signature &amp; Date</div>
+      </div>
+    </div>
+    <div class="pr-footer">Workplace Occupational Health Research Programme &nbsp;·&nbsp; Confidential — Authorised Personnel Only &nbsp;·&nbsp; <span id="pr-footer-date"></span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MAIN UI
+════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="header-badge">Workplace Health Research · Data Entry</div>
+    <h1>Occupational <span>Illness</span> Registry</h1>
+    <p>Two-step workflow · Medical Assistant → Doctor</p>
+  </div>
+</header>
+<div class="role-strip" id="roleStrip"></div>
+
+<div class="container">
+
+  <!-- ── STEP 0: Role Selector ── -->
+  <div id="roleScreen">
+    <div style="text-align:center;margin-bottom:2rem;padding-top:0.5rem">
+      <h2 style="font-family:'Fraunces',serif;font-size:1.3rem;font-weight:300;color:var(--teal-900);margin-bottom:0.4rem">Who is filling this form?</h2>
+      <p style="font-size:0.85rem;color:var(--ink-60)">Select your role to load the appropriate sections</p>
+    </div>
+    <div class="role-cards">
+      <div class="role-card assistant" onclick="startAssistant()">
+        <div class="role-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Medical Assistant</h3>
+        <p>Fill in patient details, work profile and environmental risk information</p>
+        <span class="role-scope">Sections 1 · 2 · 3</span>
+      </div>
+      <div class="role-card doctor" onclick="startDoctor()">
+        <div class="role-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0013.5 3c-1.04 0-2.03.27-2.88.73M12 20v-5m0 0l-2-2m2 2l2-2" stroke="#0a5157" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="14" r="3" stroke="#0a5157" stroke-width="2"/><path d="M5.5 17H4a2 2 0 00-2 2v1" stroke="#0a5157" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Doctor / Physician</h3>
+        <p>Complete clinical presentation, assessment and attending professional details</p>
+        <span class="role-scope">Sections 4 · 5 · 6</span>
+      </div>
+      <div class="role-card" onclick="startPrescriptions()" style="border-color:transparent">
+        <div class="role-icon" style="background:#eaf2fb">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#1a5276" stroke-width="2" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8m8 4H8m2-8H8" stroke="#1a5276" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Print Prescriptions</h3>
+        <p>View completed prescriptions queue and print or download PDF for any patient</p>
+        <span class="role-scope" style="background:#eaf2fb;border-color:#aed6f1;color:#1a5276">Print · Download PDF</span>
+      </div>
+      <div class="role-card" onclick="startDashboard()" style="border-color:transparent">
+        <div class="role-icon" style="background:#fef3c7">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><rect x="2" y="12" width="4" height="10" rx="1" stroke="#b45309" stroke-width="2"/><rect x="9" y="8" width="4" height="14" rx="1" stroke="#b45309" stroke-width="2"/><rect x="16" y="3" width="4" height="19" rx="1" stroke="#b45309" stroke-width="2"/><path d="M2 7l5-4 5 3 5-4" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Management Dashboard</h3>
+        <p>Illness trends, job area risk analysis, disease breakdown and action plan</p>
+        <span class="role-scope" style="background:#fef3c7;border-color:#fde68a;color:#b45309">Daily · Monthly · Yearly</span>
+      </div>
+      <div class="role-card" onclick="startPatientPortal()" style="border-color:transparent">
+        <div class="role-icon" style="background:#f3e8ff">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#7c3aed" stroke-width="2"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><path d="M16 11h4m-2-2v4" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>My Health File</h3>
+        <p>Patients can view their visits, diagnosis, medicines and prescriptions</p>
+        <span class="role-scope" style="background:#f3e8ff;border-color:#ddd6fe;color:#7c3aed">Mobile Number Login</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 1: Assistant Form ── -->
+  <div id="assistantFormScreen" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+    <div class="info-bar yellow">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:2px"><circle cx="8" cy="8" r="7.25" stroke="#f0d060" stroke-width="1.5"/><path d="M8 4v4l2.5 2" stroke="#f0d060" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <p><strong>Medical Assistant —</strong> Fill sections 1, 2, 3 then submit. A <strong>Record ID</strong> will be generated to hand to the doctor.</p>
+    </div>
+    <form id="assistantForm" autocomplete="off" novalidate>
+
+      <!-- 01. Patient Demographics -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">01</div><h2>Patient Demographics</h2></div>
+        <div class="section-body">
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="field"><label>Patient Name <span class="req">*</span></label><input type="text" name="patient_name" placeholder="e.g. Md. Rahim Uddin" required></div>
+            <div class="field"><label>Mobile Number <span class="unit">(Serial / Contact)</span></label><input type="tel" name="mobile_number" placeholder="e.g. 01712-345678"></div>
+          </div>
+          <div class="grid-4">
+            <div class="field"><label>Age <span class="req">*</span> <span class="unit">(years)</span></label><input type="number" name="age" min="15" max="80" placeholder="e.g. 34" required></div>
+            <div class="field"><label>Sex <span class="req">*</span></label><select name="sex" required><option value="">— select —</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+            <div class="field"><label>Height <span class="req">*</span> <span class="unit">(cm)</span></label><input type="number" name="height_cm" min="100" max="220" placeholder="e.g. 162" required></div>
+            <div class="field"><label>Weight <span class="req">*</span> <span class="unit">(kg)</span></label><input type="number" name="weight_kg" min="30" max="200" step="0.1" placeholder="e.g. 58.5" required></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-3">
+            <div class="field">
+              <label>Blood Pressure <span class="req">*</span> <span class="unit">(mmHg)</span></label>
+              <div class="bp-group">
+                <input type="number" name="bp_systolic" min="60" max="250" placeholder="120" style="max-width:80px" required>
+                <span class="bp-sep">/</span>
+                <input type="number" name="bp_diastolic" min="40" max="150" placeholder="80" style="max-width:80px" required>
+              </div>
+            </div>
+            <div class="field"><label>Bed Time</label><input type="time" name="bed_time"></div>
+            <div class="field"><label>Wake-up Time</label><input type="time" name="wake_time"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02. Work Profile -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">02</div><h2>Work Profile</h2></div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="field"><label>Job Role / Designation <span class="req">*</span></label><input type="text" name="job_designation" placeholder="e.g. Sewing Operator, Line Supervisor" required></div>
+            <div class="field"><label>Total Experience <span class="unit">(years)</span></label><input type="number" name="total_experience" min="0" max="50" step="0.5" placeholder="e.g. 7.5"></div>
+            <div class="field"><label>Home Distance <span class="unit">(km from factory)</span></label><input type="number" name="home_distance_km" min="0" max="200" step="0.1" placeholder="e.g. 4.5"></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-3">
+            <div class="field"><label>Working Hours/Day <span class="req">*</span></label><input type="number" name="hours_per_day" min="1" max="24" placeholder="e.g. 9" required></div>
+            <div class="field"><label>Working Hours/Week <span class="req">*</span></label><input type="number" name="hours_per_week" min="1" max="120" placeholder="e.g. 54" required></div>
+            <div class="field"><label>Years in Current Role</label><input type="number" name="years_in_role" min="0" max="50" step="0.5" placeholder="e.g. 3.5"></div>
+          </div>
+          <hr class="divider">
+          <div class="field" style="margin-bottom:1.25rem">
+            <label>Job Nature <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="job_nature" value="Sitting" required><span>Sitting job</span></label>
+              <label class="radio-pill"><input type="radio" name="job_nature" value="Standing"><span>Standing job</span></label>
+              <label class="radio-pill"><input type="radio" name="job_nature" value="Loading/Physical"><span>Loading / Physical</span></label>
+              <label class="radio-pill"><input type="radio" name="job_nature" value="Mixed"><span>Mixed</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Job / Work Area <span class="req">*</span></label>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" name="job_area" value="Production"><span>Production</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Quality / QC"><span>Quality / QC</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="IE / Industrial Eng."><span>IE / Industrial Eng.</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Cutting"><span>Cutting</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Sewing / Stitching"><span>Sewing / Stitching</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Finishing"><span>Finishing</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Washing"><span>Washing</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Maintenance"><span>Maintenance</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Warehouse / Store"><span>Warehouse / Store</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Admin / HR / Office"><span>Admin / HR / Office</span></label>
+              <label class="check-item"><input type="checkbox" name="job_area" value="Other"><span>Other</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03. Environmental & Risk Indicators -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">03</div><h2>Environmental &amp; Risk Indicators</h2></div>
+        <div class="section-body">
+          <div class="grid-4">
+            <div class="field">
+              <label>Exposure to Chemicals / Dust</label>
+              <select name="chemical_exposure"><option value="">— select —</option><option>No</option><option>Yes — Chemical</option><option>Yes — Dust / Fibre</option><option>Yes — Both</option></select>
+            </div>
+            <div class="field">
+              <label>Noise Exposure Level</label>
+              <select name="noise_exposure"><option value="">— select —</option><option>Normal (below 85 dB)</option><option>Above Normal (85–100 dB)</option><option>High (above 100 dB)</option></select>
+            </div>
+            <div class="field">
+              <label>Physical Strain Level</label>
+              <select name="physical_strain"><option value="">— select —</option><option>Low</option><option>Medium</option><option>High</option></select>
+            </div>
+            <div class="field">
+              <label>Temperature Condition</label>
+              <select name="temperature_condition"><option value="">— select —</option><option>Normal</option><option>Cold</option><option>Hot</option><option>Variable / Fluctuating</option></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" id="assistantSubmitBtn">Submit for Doctor Review</button>
+        <p class="submit-note">Sections 1–3 will be saved · Record ID will be generated for the doctor</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- ── STEP 2: Assistant Success / Record ID ── -->
+  <div id="assistantSuccessScreen" style="display:none">
+    <div class="success-card">
+      <div class="success-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0a5157" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2>Patient Record Submitted</h2>
+      <p class="sub">Sections 1–3 saved to Google Sheets. Hand this Record ID to the doctor.</p>
+      <div class="record-id-box">
+        <div class="rid-label">Patient Record ID</div>
+        <div class="rid-value" id="displayRecordId">—</div>
+      </div>
+      <div class="handover-instruction">
+        <p><strong>Next step:</strong> Give this Record ID to the attending doctor or physician. The doctor will enter this ID on their device to load the patient data and complete the clinical assessment (Sections 4, 5 and 6).</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn-pdf" onclick="startDoctor()" style="background:var(--teal-700)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/></svg>
+          I am the Doctor — Continue Now
+        </button>
+        <button type="button" class="btn-new" onclick="startNewPatient()">+ New Patient</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Doctor Entry ── -->
+  <div id="doctorEntryScreen" style="display:none">
+    <div class="doctor-entry-card">
+      <h2>Doctor / Physician</h2>
+      <p class="sub">Select a patient from the pending queue, or enter a Record ID manually.</p>
+
+      <!-- Pending Queue -->
+      <div class="queue-header">
+        <div class="queue-title">Pending Patients <span class="queue-badge" id="queueCount">0</span></div>
+        <button class="queue-clear" onclick="clearQueue()">Clear All</button>
+      </div>
+      <div class="queue-list" id="queueList">
+        <div class="queue-empty"><p>No pending patients yet</p></div>
+      </div>
+
+      <div class="or-divider"><hr><span>or enter Record ID manually</span><hr></div>
+      <div class="rid-input-wrap">
+        <div class="field" style="flex:1">
+          <label>Patient Record ID</label>
+          <input type="text" id="doctorRidInput" placeholder="e.g. WHR-20250420-0934-A7F2" style="font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.06em">
+        </div>
+        <button type="button" class="btn-load" onclick="loadRecord()">Load Patient</button>
+      </div>
+      <div id="ridError" style="display:none;margin-top:8px;font-size:0.82rem;color:var(--danger);font-family:'DM Mono',monospace"></div>
+      <div class="or-divider"><hr><span>or</span><hr></div>
+      <p style="font-size:0.82rem;color:var(--ink-60);text-align:center">Same device as assistant? <a href="#" onclick="continueFromSameSession();return false" style="color:var(--teal-500)">Continue from this session</a>.</p>
+    </div>
+  </div>
+
+  <!-- ── Prescriptions Screen ── -->
+  <div id="prescriptionsScreen" style="display:none">
+    <div class="presc-toolbar">
+      <button class="btn-back" onclick="startNewPatient()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Home
+      </button>
+      <button class="btn-clear-presc" onclick="clearPrescriptions()">Clear All</button>
+    </div>
+
+    <div class="presc-screen-header">
+      <div>
+        <div class="presc-screen-title">
+          Prescriptions Queue
+          <span class="presc-badge-count" id="prescCount">0</span>
+        </div>
+        <div class="presc-screen-sub">Completed patient records ready to print or download as PDF</div>
+      </div>
+    </div>
+
+    <div class="presc-list" id="prescList">
+      <div class="presc-empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="#b3bcbe" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 2v6h6M16 13H8m8 4H8" stroke="#b3bcbe" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <p>No prescriptions yet · Completed records will appear here</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Patient Portal Screen ── -->
+  <div id="patientPortalScreen" style="display:none">
+    <div class="dash-toolbar">
+      <div>
+        <div class="dash-title">My Health File</div>
+        <div class="dash-sub">View your medical records, diagnoses and prescriptions</div>
+      </div>
+      <button class="btn-back" onclick="startNewPatient()" style="margin:0">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Home
+      </button>
+    </div>
+
+    <!-- Search box -->
+    <div class="portal-search-card">
+      <h2>Enter Your Mobile Number</h2>
+      <p class="sub">Your mobile number is used as your patient ID. Enter the same number registered with the medical assistant.</p>
+      <div class="portal-input-row">
+        <div class="field" style="flex:1">
+          <label>Mobile Number</label>
+          <input type="tel" id="portalMobileInput" placeholder="e.g. 01712-345678" onkeydown="if(event.key==='Enter') portalSearch()">
+        </div>
+        <button class="btn-portal-search" id="portalSearchBtn" onclick="portalSearch()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="white" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Find My Records
+        </button>
+      </div>
+      <div class="portal-error" id="portalError">No records found for this mobile number. Please check the number and try again.</div>
+    </div>
+
+    <!-- Results area -->
+    <div class="portal-results" id="portalResults"></div>
+  </div>
+
+  <!-- ── Dashboard Screen ── -->
+  <div id="dashboardScreen" style="display:none">
+    <div class="dash-toolbar">
+      <div>
+        <div class="dash-title">Management Analytics Dashboard</div>
+        <div class="dash-sub" id="dashSubLabel">Loading…</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div>
+          <div class="dash-period-tabs">
+            <button class="dash-period-tab active" id="dpt-daily"   onclick="dashSetPeriod('daily',this)">Daily</button>
+            <button class="dash-period-tab"         id="dpt-weekly"  onclick="dashSetPeriod('weekly',this)">Weekly</button>
+            <button class="dash-period-tab"         id="dpt-monthly" onclick="dashSetPeriod('monthly',this)">Monthly</button>
+            <button class="dash-period-tab"         id="dpt-yearly"  onclick="dashSetPeriod('yearly',this)">Yearly</button>
+            <button class="dash-period-tab"         id="dpt-custom"  onclick="dashSetPeriod('custom',this)">Custom Range</button>
+          </div>
+          <!-- Date range row — shown for weekly and custom -->
+          <div class="dash-daterange-row" id="dashDateRangeRow" style="display:none">
+            <label>From</label>
+            <input type="date" id="dashDateFrom">
+            <span class="dash-date-sep">→</span>
+            <label>To</label>
+            <input type="date" id="dashDateTo">
+            <button class="btn-apply-range" onclick="dashApplyRange()">Apply</button>
+            <span class="dash-range-active-label" id="dashRangeLabel" style="display:none"></span>
+          </div>
+        </div>
+        <button class="btn-dash-refresh" id="dashRefreshBtn" onclick="dashLoad()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M1 4v6h6M23 20v-6h-6M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Refresh
+        </button>
+        <button class="btn-back" onclick="startNewPatient()" style="margin:0">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M19 12H5m0 0l7 7m-7-7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Home
+        </button>
+      </div>
+    </div>
+    <div id="dashInner">
+      <div class="dash-loading"><div class="spin-ring"></div><p style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink-30)">Loading patient data…</p></div>
+    </div>
+  </div>
+
+  <!-- ── STEP 4: Doctor Form ── -->
+  <div id="doctorFormScreen" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step done"></div>
+      <div class="progress-step active"></div>
+      <div class="progress-step"></div>
+      <div class="progress-step"></div>
+    </div>
+
+    <div class="info-bar blue">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;margin-top:2px"><circle cx="8" cy="8" r="7.25" stroke="#aed6f1" stroke-width="1.5"/><path d="M8 5v4m0 2v.5" stroke="#aed6f1" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <p><strong>Doctor —</strong> Patient Record <strong id="doctorRidDisplay">—</strong> loaded. Sections 1–3 are read-only. Please complete Sections 4, 5 and 6 then submit the final record.</p>
+    </div>
+
+    <!-- Read-only patient summary -->
+    <div id="patientSummary">
+      <h3>Patient Summary (from Medical Assistant)</h3>
+      <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+
+    <form id="doctorForm" autocomplete="off" novalidate>
+      <input type="hidden" name="record_id" id="doctorFormRecordId">
+
+      <!-- 04. Clinical Presentation -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">04</div><h2>Clinical Presentation</h2></div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="field"><label>Primary Symptom(s) <span class="req">*</span></label><textarea name="primary_symptoms" placeholder="e.g. Persistent lower back pain, radiating to left leg" required></textarea></div>
+            <div class="field"><label>Secondary Symptom(s)</label><textarea name="secondary_symptoms" placeholder="e.g. Numbness in fingers, mild headache in evening"></textarea></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-3">
+            <div class="field"><label>Duration of Illness <span class="req">*</span></label><input type="number" name="duration_days" min="1" placeholder="e.g. 14" required></div>
+            <div class="field"><label>Duration Unit</label><select name="duration_unit"><option value="Days">Days</option><option value="Weeks">Weeks</option><option value="Months">Months</option></select></div>
+            <div class="field"><label>Severity</label><select name="severity"><option value="">— select —</option><option>Mild</option><option>Moderate</option><option>Severe</option><option>Critical</option></select></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-4">
+            <div class="field"><label>Type of Illness</label><select name="illness_type"><option value="">— select —</option><option>Physical Illness</option><option>Mental Health Issues</option><option>Occupational Risk</option><option>Mixed (Physical + Mental)</option><option>Mixed (Physical + Occupational)</option><option>Other</option></select></div>
+            <div class="field"><label>Illness Happened Earlier?</label><select name="illness_earlier"><option value="">— select —</option><option>No</option><option>Yes</option></select></div>
+            <div class="field"><label>Medical Consultation Taken?</label><select name="consultation_taken"><option value="">— select —</option><option>No</option><option>Yes</option></select></div>
+            <div class="field"><label>Medication Going On?</label><select name="medication_ongoing"><option value="">— select —</option><option>No</option><option>Yes</option></select></div>
+          </div>
+          <hr class="divider">
+          <div class="field" style="margin-bottom:1.25rem">
+            <label>Chronic Disease(s) <span class="unit">(select all that apply)</span></label>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Diabetes"><span>Diabetes</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Hypertension (High BP)"><span>Hypertension (High BP)</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Asthma"><span>Asthma</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Chronic Bronchitis / COPD"><span>Chronic Bronchitis / COPD</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Heart Disease"><span>Heart Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Kidney Disease"><span>Kidney Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Liver Disease"><span>Liver Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Thyroid Disorder"><span>Thyroid Disorder</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Arthritis / Joint Disease"><span>Arthritis / Joint Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Anaemia"><span>Anaemia</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="Depression / Anxiety"><span>Depression / Anxiety</span></label>
+              <label class="check-item"><input type="checkbox" name="chronic_disease" value="None"><span>None</span></label>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="field"><label>Any Operation History?</label><select name="operation_history" id="operationSelect" onchange="toggleOp(this.value)"><option value="">— select —</option><option>No</option><option>Yes</option></select></div>
+            <div class="field" id="operationDetailWrap" style="display:none"><label>Operation Details <span class="unit">(brief)</span></label><input type="text" name="operation_detail" placeholder="e.g. Appendectomy 2019"></div>
+          </div>
+          <hr class="divider">
+          <div class="field" style="margin-bottom:1.25rem">
+            <label>Drinking / Smoking Habit <span class="unit">(select all that apply)</span></label>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" name="habit" value="Non-smoker"><span>Non-smoker</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Smoker (current)"><span>Smoker (current)</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Ex-smoker"><span>Ex-smoker</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Bidi smoker"><span>Bidi smoker</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Tobacco / Jarda"><span>Tobacco / Jarda</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Alcohol (occasional)"><span>Alcohol (occasional)</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="Alcohol (regular)"><span>Alcohol (regular)</span></label>
+              <label class="check-item"><input type="checkbox" name="habit" value="None"><span>None</span></label>
+            </div>
+          </div>
+          <hr class="divider">
+          <div class="field">
+            <label>Family Disease History <span class="unit">(select all that apply)</span></label>
+            <div class="check-grid">
+              <label class="check-item"><input type="checkbox" name="family_history" value="Diabetes"><span>Diabetes</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Hypertension"><span>Hypertension</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Heart Disease"><span>Heart Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Cancer"><span>Cancer</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Asthma / Respiratory"><span>Asthma / Respiratory</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Kidney Disease"><span>Kidney Disease</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Mental Health Issues"><span>Mental Health Issues</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Thyroid Disorder"><span>Thyroid Disorder</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="Stroke"><span>Stroke</span></label>
+              <label class="check-item"><input type="checkbox" name="family_history" value="None / Not known"><span>None / Not known</span></label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05. Doctor's Assessment -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">05</div><h2>Doctor's Assessment</h2></div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="field"><label>Suggested Diagnostic Tests</label><textarea name="suggested_tests" placeholder="e.g. CBC, X-Ray lumber spine, EMG/NCV, Blood glucose fasting"></textarea></div>
+            <div class="field"><label>Recommended Medicines</label><textarea name="medicines" placeholder="e.g. Naproxen 500mg BD × 5 days, Vitamin D3 1000IU OD"></textarea></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-2">
+            <div class="field"><label>Food Recommendation</label><textarea name="food_recommendation" placeholder="Foods to take: e.g. High-fibre vegetables, fruits&#10;Foods to avoid: e.g. Fried food, excess sugar"></textarea></div>
+            <div class="field"><label>Exercise Recommendation</label><textarea name="exercise_recommendation" placeholder="e.g. Light walking 20 min/day, avoid heavy lifting, stretching exercises"></textarea></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-2" style="margin-bottom:1.25rem">
+            <div class="field"><label>Provisional Diagnosis</label><input type="text" name="diagnosis" placeholder="e.g. Occupational lumbar disc herniation"></div>
+            <div class="field"><label>Follow-up Recommended</label><select name="followup"><option value="">— select —</option><option>Within 3 days</option><option>Within 1 week</option><option>Within 2 weeks</option><option>1 month</option><option>Not required</option></select></div>
+          </div>
+          <div class="leave-calendar-box">
+            <div class="leave-calendar-header">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="#0a5157" stroke-width="1.8"/><path d="M16 2v4M8 2v4M3 10h18" stroke="#0a5157" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <span>Recommended Medical Leave</span>
+            </div>
+            <div class="leave-calendar-fields">
+              <div class="field">
+                <label>Leave From <span class="unit">(start date)</span></label>
+                <input type="date" name="leave_from" id="leaveFrom" onchange="calcLeaveDays()">
+              </div>
+              <div class="leave-calendar-arrow">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14m0 0l-6-6m6 6l-6 6" stroke="#b3bcbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div class="field">
+                <label>Leave Up To <span class="unit">(end date)</span></label>
+                <input type="date" name="leave_to" id="leaveTo" onchange="calcLeaveDays()">
+              </div>
+              <div class="leave-days-display" id="leaveDaysDisplay" style="display:none">
+                <div class="leave-days-num" id="leaveDaysNum">0</div>
+                <div class="leave-days-label">Days</div>
+              </div>
+            </div>
+            <input type="hidden" name="recommended_leave" id="recommendedLeaveHidden">
+          </div>
+        </div>
+      </div>
+
+      <!-- 06. Attending Professional -->
+      <div class="section">
+        <div class="section-header"><div class="section-num">06</div><h2>Attending Professional</h2></div>
+        <div class="section-body">
+          <div class="grid-4">
+            <div class="field"><label>Doctor / Staff Name <span class="req">*</span></label><input type="text" name="doctor_name" placeholder="Dr. Name" required></div>
+            <div class="field"><label>BMDC Reg. No. <span class="req">*</span></label><input type="text" name="bmdc_reg" placeholder="e.g. A-12345" required></div>
+            <div class="field"><label>Designation / Role</label><input type="text" name="doctor_role" placeholder="e.g. Medical Officer"></div>
+            <div class="field"><label>Facility / Factory</label><input type="text" name="facility" placeholder="e.g. Unit 3 — Gazipur"></div>
+          </div>
+          <hr class="divider">
+          <div class="grid-2">
+            <div class="field"><label>Entry Date <span class="req">*</span></label><input type="date" name="entry_date" required></div>
+            <div class="field"><label>Additional Notes</label><input type="text" name="notes" placeholder="Optional remarks"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-wrap">
+        <button type="submit" id="doctorSubmitBtn">Submit Final Patient Record</button>
+        <p class="submit-note">Completes the record in Google Sheets · PDF prescription will be available</p>
+        <div id="pdfPanel">
+          <div class="pdf-panel-icon">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#0a5157" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Record Complete &amp; Saved</h3>
+          <p>All sections saved to Google Sheets. The prescription has been added to the <strong>Print Queue</strong> — the medical assistant or front desk can open it there to print or download the PDF.</p>
+          <div class="btn-row">
+            <button type="button" class="btn-pdf" onclick="startPrescriptions()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="white" stroke-width="2" stroke-linejoin="round"/><path d="M14 2v6h6" stroke="white" stroke-width="2"/></svg>
+              Open Print Queue
+            </button>
+            <button type="button" class="btn-new" onclick="startNewPatient()">+ New Patient</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div><!-- /container -->
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
